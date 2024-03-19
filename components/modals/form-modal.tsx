@@ -65,7 +65,14 @@ export const FormModal = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    const validateValues = formSchema.safeParse(values);
+    if (!validateValues.success) {
+      console.log(validateValues.error)
+      console.log("Validation issue");
+    } else {
+      console.log(validateValues.data);
+    }
+    // console.log(values);
   };
 
   if (!isMounted) {

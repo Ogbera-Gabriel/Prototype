@@ -7,7 +7,6 @@ import { useEffect, useState } from "react"; // Importing useState hook
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -33,9 +32,7 @@ import {
 import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
-  quantity: z.number().min(1, {
-    message: "Quantity must be a number greater than 0",
-  }),
+  quantity: z.string().transform((v) => Number(v)||0),
   length: z.string().min(1, {
     message: "Length is required",
   }),
@@ -79,12 +76,7 @@ export const WoodFormModal = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const validateValues = formSchema.safeParse(values);
-    if (!validateValues.success) {
-      console.log("Validation issue");
-    } else {
-      console.log(validateValues.data);
-    }
+    console.log(values)
   };
 
   if (!isMounted) {
