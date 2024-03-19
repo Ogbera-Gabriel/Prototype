@@ -33,8 +33,19 @@ import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
   // quantity: z.string().transform((v) => Number(v)||0),
-  quantity: z.number().min(1, {
-    message: "quantity is required",
+  // quantity: z.number().min(1, {
+  //   message: "quantity is required",
+  // }),
+  quantity: z
+  .string()
+  .or(z.number())
+  .refine((value) => {
+    if (typeof value === "number") {
+      return value > 0; // Ensure it's a positive number
+    }
+    return !isNaN(Number(value)) && Number(value) > 0;
+  },{
+    message: "Quantity must be a number greater than 0",
   }),
   length: z.string().min(1, {
     message: "Length is required",
@@ -79,7 +90,12 @@ export const WoodFormModal = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+
+    values.quantity = !isNaN(Number(values.quantity)) ? Number(values.quantity) : values.quantity;
+
+    
     const validateValues = formSchema.safeParse(values);
+    
     if (!validateValues.success) {
       console.log(validateValues.error)
       console.log("Validation issue");
