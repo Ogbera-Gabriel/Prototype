@@ -102,7 +102,7 @@ export const WoodFormModal = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-8 px-6">
-              {/* <FormField
+              <FormField
                 control={form.control}
                 name="quantity"
                 render={({ field }) => (
@@ -110,7 +110,7 @@ export const WoodFormModal = () => {
                     <FormLabel className="uppercase text-xs font-bold text-zinc-500">
                       Quantity<span className="text-red-500">*</span>
                     </FormLabel>
-                    <Select>
+                    {/* <Select>
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="pc" />
                       </SelectTrigger>
@@ -119,7 +119,7 @@ export const WoodFormModal = () => {
                         <SelectItem value="m3">m³</SelectItem>
                         <SelectItem value="pc">pc</SelectItem>
                       </SelectContent>
-                    </Select>
+                    </Select> */}
                     <FormControl>
                       <Input
                         type="number"
@@ -132,7 +132,7 @@ export const WoodFormModal = () => {
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
               <FormField
                 control={form.control}
                 name="length"
