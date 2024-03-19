@@ -33,26 +33,26 @@ import {
 import { Textarea } from "../ui/textarea";
 
 const formSchema = z.object({
-    quantity: z.number().min(1, {
-        message: "Quantity must be a number greater than 0",
-      }),
-    length: z.string().min(1, {
-      message: "Length is required",
-    }),
-    drying: z.string().min(1, {
-      message: "Drying is required",
-    }),
-    strength: z.string().min(1, {
-      message: "Strength Grade is required",
-    }),
-    visual: z.string().min(1, {
-      message: "Visual Quality is required",
-    }),
-    post: z.string().optional(),
-    certified: z.string().optional(),
-    moisture: z.string().optional(),
-    impregnation: z.string().optional(),
-  });
+  quantity: z.number().min(1, {
+    message: "Quantity must be a number greater than 0",
+  }),
+  length: z.string().min(1, {
+    message: "Length is required",
+  }),
+  drying: z.string().min(1, {
+    message: "Drying is required",
+  }),
+  strength: z.string().min(1, {
+    message: "Strength Grade is required",
+  }),
+  visual: z.string().min(1, {
+    message: "Visual Quality is required",
+  }),
+  post: z.string().optional(),
+  certified: z.string().optional(),
+  moisture: z.string().optional(),
+  impregnation: z.string().optional(),
+});
 
 export const WoodFormModal = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -64,7 +64,7 @@ export const WoodFormModal = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      quantity: 0,
+      quantity: 4,
       length: "",
       drying: "",
       strength: "",
@@ -79,7 +79,12 @@ export const WoodFormModal = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    const validateValues = formSchema.safeParse(values);
+    if (!validateValues.success) {
+      console.log("Validation issue");
+    } else {
+      console.log(validateValues.data);
+    }
   };
 
   if (!isMounted) {
@@ -137,24 +142,22 @@ export const WoodFormModal = () => {
                       Length<span className="text-red-500">*</span>
                     </FormLabel>
                     <Select
-                     onValueChange={field.onChange}
-                     defaultValue={field.value}
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
                     >
-                      
-                      
-                    <FormControl>
-                      {/* <Input
+                      <FormControl>
+                        {/* <Input
                         type="number"
                         disabled={isLoading}
                         className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
                         placeholder="Enter Custom Length"
                         {...field}
                       /> */}
-                      <SelectTrigger className="w-[400px]">
-                        <SelectValue placeholder="2400mm" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
+                        <SelectTrigger className="w-[400px]">
+                          <SelectValue placeholder="2400mm" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
                         <SelectItem value="2400mm">2400mm</SelectItem>
                         <SelectItem value="2500mm">2500mm</SelectItem>
                         <SelectItem value="2600mm">2600mm</SelectItem>
@@ -343,10 +346,7 @@ export const WoodFormModal = () => {
                   <FormItem>
                     <FormLabel>Additional notes</FormLabel>
                     <FormControl>
-                      <Textarea
-                        className="resize-none"
-                        {...field}
-                      />
+                      <Textarea className="resize-none" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -354,9 +354,9 @@ export const WoodFormModal = () => {
               />
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
-              <Button 
-              type = 'submit'
-             disabled={isLoading}>Submit</Button>
+              <Button type="submit" disabled={isLoading}>
+                Submit
+              </Button>
             </DialogFooter>
           </form>
         </Form>
