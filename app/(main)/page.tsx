@@ -1,13 +1,15 @@
 
 
-import { WoodFormModal } from "@/components/modals/woods-form-modal";
+import  WoodFormModal  from "@/components/modals/woods-form-modal";
+import { Container } from "@mui/material";
 
 
 export default function Home() {
   return (
-    <div>
+    
+    <Container>
       <WoodFormModal />
-    </div>
+    </Container>
     
   );
 }
