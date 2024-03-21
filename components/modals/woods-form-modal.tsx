@@ -183,7 +183,7 @@ export default function WoodFormModal() {
   return (
     <div>
       <Dialog open={showConfirmation} onClose={handleClose}>
-  <DialogTitle>Confirmation</DialogTitle>
+  <DialogTitle style={style.dialogtile}>Confirmation</DialogTitle>
   <DialogContent>
     <DialogContentText>
       Thank you for your order. Your order details are:
