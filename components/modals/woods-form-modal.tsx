@@ -129,6 +129,18 @@ export default function WoodFormModal() {
 
   const handleConfirmationClose = () => {
     setShowConfirmation(false);
+    setSelectedOptions({
+      softwood: "",
+      quantityMeasure: "", 
+      length: "",
+      finish: "",
+      drying: "",
+      strengthGrade: "",
+      visualQuantity: "",
+      certified: "",
+      moisture: "",
+      impregnation: "",
+    });
   }
 
 
