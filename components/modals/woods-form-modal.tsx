@@ -127,6 +127,11 @@ export default function WoodFormModal() {
     setOpen(false);
   };
 
+  const handleConfirmationClose = () => {
+    setShowConfirmation(false);
+  }
+
+
   const handleShowCompany = () => {
     setShowCompany(true);
     setShowWood(false);
@@ -181,7 +186,7 @@ export default function WoodFormModal() {
 
   return (
     <div>
-      <Dialog open={showConfirmation} onClose={handleClose}>
+      <Dialog open={showConfirmation} onClose={handleConfirmationClose}>
         <DialogTitle style={style.dialogtile}>Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -223,7 +228,10 @@ export default function WoodFormModal() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} style={{ backgroundColor: '#314f32', color: 'white' }}>
+          <Button
+            onClick={handleConfirmationClose}
+            style={{ backgroundColor: "#314f32", color: "white" }}
+          >
             Close
           </Button>
         </DialogActions>
@@ -235,7 +243,11 @@ export default function WoodFormModal() {
             {showWood ? "Wood Form" : "Your Profile"}
           </DialogTitle>
           <DialogContent>
-            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              autoComplete="off"
+              style={{ paddingBlock: "20px" }}
+            >
               {showWood && (
                 <>
                   <FormControl fullWidth style={{ marginBottom: "10px" }}>
@@ -585,7 +597,7 @@ export default function WoodFormModal() {
                   <Button
                     type="button"
                     onClick={handleShowCompany}
-                    style={{ backgroundColor: '#314f32', color: 'white' }}
+                    style={{ backgroundColor: "#314f32", color: "white" }}
                   >
                     Next
                   </Button>
@@ -597,7 +609,10 @@ export default function WoodFormModal() {
                   </Button>
                 )}
                 {showCompany && (
-                  <Button type="submit" style={{ backgroundColor: '#314f32', color: 'white' }}>
+                  <Button
+                    type="submit"
+                    style={{ backgroundColor: "#314f32", color: "white" }}
+                  >
                     Submit
                   </Button>
                 )}
