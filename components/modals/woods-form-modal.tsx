@@ -1,6 +1,6 @@
 "use client";
 
-import { FormControl, InputLabel, Select } from "@mui/material";
+import { Autocomplete, FormControl, InputLabel, Select } from "@mui/material";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -23,6 +23,9 @@ import MenuItem from "@mui/material/MenuItem";
 import { SubmitHandler } from "react-hook-form";
 import axios from "axios";
 import { green } from "@mui/material/colors";
+import ConfirmationDialog from "@/components/modals/confimation-modal";
+import CompanyFormFields from "./company-modal";
+import { useRouter } from "next/navigation";
 
 const style = {
   dialogtile: {
@@ -127,22 +130,7 @@ export default function WoodFormModal() {
     setOpen(false);
   };
 
-  const handleConfirmationClose = () => {
-    setShowConfirmation(false);
-    setSelectedOptions({
-      softwood: "",
-      quantityMeasure: "", 
-      length: "",
-      finish: "",
-      drying: "",
-      strengthGrade: "",
-      visualQuantity: "",
-      certified: "",
-      moisture: "",
-      impregnation: "",
-    });
-  }
-
+  const router = useRouter();
 
   const handleShowCompany = () => {
     setShowCompany(true);
@@ -154,7 +142,25 @@ export default function WoodFormModal() {
     setShowWood(true);
   };
 
+  const handleCloseConfirmation = () => {
+    setShowConfirmation(false);
+    setSelectedOptions({
+      softwood: "",
+      quantityMeasure: "",
+      length: "",
+      finish: "",
+      drying: "",
+      strengthGrade: "",
+      visualQuantity: "",
+      certified: "",
+      moisture: "",
+      impregnation: "",
+    });
+    router.push("/offer");
+  };
+
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
+    debugger;
     try {
       const formData = {
         woods: [
@@ -181,9 +187,13 @@ export default function WoodFormModal() {
         },
       };
       console.log(formData);
-      // const response = await axios.post("http://localhost:8080/quotation", formData);
+      // const response = await axios.post(
+      //   process.env.NEXT_PUBLIC_SERVER_URL!,
+      //   formData
+      // );
 
       // console.log(response.data);
+
       handleClose();
       setFormData(data);
       setShowConfirmation(true);
@@ -198,56 +208,11 @@ export default function WoodFormModal() {
 
   return (
     <div>
-      <Dialog open={showConfirmation} onClose={handleConfirmationClose}>
-        <DialogTitle style={style.dialogtile}>Confirmation</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Thank you for your order. Your order details are:
-          </DialogContentText>
-          {formData && (
-            <>
-              <Typography variant="body1">
-                Softwood: {formData.softwood}
-              </Typography>
-              <Typography variant="body1">
-                Quantity: {formData.quantityMeasure}
-              </Typography>
-              <Typography variant="body1">Length: {formData.length}</Typography>
-              <Typography variant="body1">Finish: {formData.finish}</Typography>
-              <Typography variant="body1">Drying: {formData.drying}</Typography>
-              <Typography variant="body1">
-                Strength Grade: {formData.strengthGrade}
-              </Typography>
-              <Typography variant="body1">
-                Visual Quality: {formData.visualQuantity}
-              </Typography>
-              {formData.certified && (
-                <Typography variant="body1">
-                  Certified: {formData.certified}
-                </Typography>
-              )}
-              {formData.moisture && (
-                <Typography variant="body1">
-                  Moisture: {formData.moisture}
-                </Typography>
-              )}
-              {formData.impregnation && (
-                <Typography variant="body1">
-                  Impregnation: {formData.impregnation}
-                </Typography>
-              )}
-            </>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleConfirmationClose}
-            style={{ backgroundColor: "#314f32", color: "white" }}
-          >
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmationDialog
+        open={showConfirmation}
+        handleClose={handleCloseConfirmation}
+        formData={formData}
+      />
       <>
         <Button onClick={handleOpen}>Open Form</Button>
         <Dialog open={open} onClose={handleClose}>
@@ -258,11 +223,11 @@ export default function WoodFormModal() {
             <form
               onSubmit={handleSubmit(onSubmit)}
               autoComplete="off"
-              style={{ paddingBlock: "20px" }}
+              style={{ paddingBlock: "20px", width: "500px" }}
             >
               {showWood && (
                 <>
-                  <FormControl fullWidth style={{ marginBottom: "10px" }}>
+                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
                     <InputLabel id="demo-simple-select-label">
                       SoftWood
                     </InputLabel>
@@ -294,7 +259,41 @@ export default function WoodFormModal() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
+
+                  <Autocomplete
+                    fullWidth
+                    options={[
+                      "Douglas 45x200",
+                      "Larch 160x260",
+                      "Pine 47x100",
+                      "Spruce 22x45",
+                      "Spruce SLS 38x140",
+                    ]}
+                    freeSolo
+                    value={selectedOptions.softwood}
+                    onChange={(event: any, newValue: string | null) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        softwood: newValue ?? "",
+                      })
+                    }
+                    onInputChange={(event, newInputValue) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        softwood: newInputValue,
+                      })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Softwood"
+                        {...register("softwood")}
+                        error={!!errors.softwood}
+                        style={{ marginBottom: "10px" }} 
+                      />
+                    )}
+                  />
 
                   <TextField
                     {...register("quantityMeasure")}
@@ -305,7 +304,7 @@ export default function WoodFormModal() {
                     style={{ marginBottom: "10px" }}
                   />
 
-                  <FormControl fullWidth style={{ marginBottom: "10px" }}>
+                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
                     <InputLabel id="demo-simple-select-label">
                       Length
                     </InputLabel>
@@ -340,7 +339,44 @@ export default function WoodFormModal() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
+
+                  <Autocomplete
+                    fullWidth
+                    options={[
+                      "2400mm",
+                      "2500mm",
+                      "2600mm",
+                      "2700mm",
+                      "2800mm",
+                      "2900mm",
+                      "3000mm",
+                      "3100mm",
+                    ]}
+                    freeSolo
+                    value={selectedOptions.length}
+                    onChange={(event: any, newValue: string | null) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        length: newValue ?? "",
+                      })
+                    }
+                    onInputChange={(event, newInputValue) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        length: newInputValue,
+                      })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Length"
+                        {...register("length")}
+                        error={!!errors.length}
+                        style={{ marginBottom: "10px" }} 
+                      />
+                    )}
+                  />
 
                   <FormControl fullWidth style={{ marginBottom: "10px" }}>
                     <InputLabel id="demo-simple-select-label">
@@ -370,7 +406,7 @@ export default function WoodFormModal() {
                     </Select>
                   </FormControl>
 
-                  <FormControl fullWidth style={{ marginBottom: "10px" }}>
+                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
                     <InputLabel id="demo-simple-select-label">
                       Drying
                     </InputLabel>
@@ -396,9 +432,37 @@ export default function WoodFormModal() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
 
-                  <FormControl fullWidth style={{ marginBottom: "10px" }}>
+                  <Autocomplete
+                    fullWidth
+                    options={["KD", "AD", "Heat Treated"]}
+                    freeSolo
+                    value={selectedOptions.drying}
+                    onChange={(event: any, newValue: string | null) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        drying: newValue ?? "",
+                      })
+                    }
+                    onInputChange={(event, newInputValue) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        drying: newInputValue,
+                      })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Drying"
+                        {...register("drying")}
+                        error={!!errors.drying}
+                        style={{ marginBottom: "10px" }} 
+                      />
+                    )}
+                  />
+
+                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
                     <InputLabel id="demo-simple-select-label">
                       Strength
                     </InputLabel>
@@ -424,9 +488,37 @@ export default function WoodFormModal() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
 
-                  <FormControl fullWidth style={{ marginBottom: "10px" }}>
+                  <Autocomplete
+                    fullWidth
+                    options={["No Strength grade", "C24", "C18"]}
+                    freeSolo
+                    value={selectedOptions.strengthGrade}
+                    onChange={(event: any, newValue: string | null) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        strengthGrade: newValue ?? "",
+                      })
+                    }
+                    onInputChange={(event, newInputValue) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        strengthGrade: newInputValue,
+                      })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Strength"
+                        {...register("strengthGrade")}
+                        error={!!errors.strengthGrade}
+                        style={{ marginBottom: "10px" }} 
+                      />
+                    )}
+                  />
+
+                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
                     <InputLabel id="demo-simple-select-label">
                       Visual Quality
                     </InputLabel>
@@ -452,7 +544,35 @@ export default function WoodFormModal() {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
+
+                  <Autocomplete
+                    fullWidth
+                    options={["C(V)", "B (OS I-IV)", "S/F (I-V)"]}
+                    freeSolo
+                    value={selectedOptions.visualQuantity}
+                    onChange={(event: any, newValue: string | null) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        visualQuantity: newValue ?? "",
+                      })
+                    }
+                    onInputChange={(event, newInputValue) =>
+                      setSelectedOptions({
+                        ...selectedOptions,
+                        visualQuantity: newInputValue,
+                      })
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Visual Quality"
+                        {...register("visualQuantity")}
+                        error={!!errors.visualQuantity}
+                        style={{ marginBottom: "10px" }} 
+                      />
+                    )}
+                  />
 
                   <Accordion>
                     <AccordionSummary
@@ -463,7 +583,7 @@ export default function WoodFormModal() {
                       <Typography>Additional Details</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      <FormControl fullWidth style={{ marginBottom: "10px" }}>
+                      {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
                         <InputLabel id="demo-simple-select-label">
                           Certified
                         </InputLabel>
@@ -489,8 +609,37 @@ export default function WoodFormModal() {
                             )
                           )}
                         </Select>
-                      </FormControl>
-                      <FormControl fullWidth style={{ marginBottom: "10px" }}>
+                      </FormControl> */}
+
+                      <Autocomplete
+                        fullWidth
+                        options={["No Certificate", "FSC or PEFC", "ISPM15"]}
+                        freeSolo
+                        value={selectedOptions.certified}
+                        onChange={(event: any, newValue: string | null) =>
+                          setSelectedOptions({
+                            ...selectedOptions,
+                            certified: newValue ?? "",
+                          })
+                        }
+                        onInputChange={(event, newInputValue) =>
+                          setSelectedOptions({
+                            ...selectedOptions,
+                            certified: newInputValue,
+                          })
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Certified"
+                            {...register("certified")}
+                            error={!!errors.certified}
+                            style={{ marginBottom: "10px" }} 
+                          />
+                        )}
+                      />
+
+                      {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
                         <InputLabel id="demo-simple-select-label">
                           Moisture
                         </InputLabel>
@@ -514,93 +663,67 @@ export default function WoodFormModal() {
                             </MenuItem>
                           ))}
                         </Select>
-                      </FormControl>
-                      <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                        <InputLabel id="demo-simple-select-label">
-                          Impregnation
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          defaultValue={""}
-                          label="Impregnation"
-                          {...register("impregnation")}
-                          value={selectedOptions.impregnation}
-                          onChange={(e) =>
-                            setSelectedOptions({
-                              ...selectedOptions,
-                              impregnation: e.target.value,
-                            })
-                          }
-                        >
-                          {["Impregnated", "Not Impregnated"].map((option) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      </FormControl> */}
+                      <Autocomplete
+                        fullWidth
+                        options={["10-14", "18-21", "15-18"]}
+                        freeSolo
+                        value={selectedOptions.moisture}
+                        onChange={(event: any, newValue: string | null) =>
+                          setSelectedOptions({
+                            ...selectedOptions,
+                            moisture: newValue ?? "",
+                          })
+                        }
+                        onInputChange={(event, newInputValue) =>
+                          setSelectedOptions({
+                            ...selectedOptions,
+                            moisture: newInputValue,
+                          })
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Moisture"
+                            {...register("moisture")}
+                            error={!!errors.impregnation}
+                            style={{ marginBottom: "10px" }}
+                          />
+                        )}
+                      />
+                      <Autocomplete
+                        fullWidth
+                        options={["Impregnated", "Not Impregnated"]}
+                        freeSolo
+                        value={selectedOptions.impregnation}
+                        onChange={(event: any, newValue: string | null) =>
+                          setSelectedOptions({
+                            ...selectedOptions,
+                            impregnation: newValue ?? "",
+                          })
+                        }
+                        onInputChange={(event, newInputValue) =>
+                          setSelectedOptions({
+                            ...selectedOptions,
+                            impregnation: newInputValue,
+                          })
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Impregnation"
+                            {...register("impregnation")}
+                            error={!!errors.impregnation}
+                          />
+                        )}
+                      />
                     </AccordionDetails>
                   </Accordion>
                 </>
               )}
 
               {showCompany && (
-                <>
-                  <TextField
-                    {...register("firstName")}
-                    required
-                    label="First Name"
-                    error={!!errors.firstName}
-                    fullWidth
-                    style={{ marginBottom: "10px" }}
-                  />
-
-                  <TextField
-                    {...register("lastName")}
-                    required
-                    label="Last Name"
-                    error={!!errors.lastName}
-                    fullWidth
-                    style={{ marginBottom: "10px" }}
-                  />
-
-                  <TextField
-                    {...register("companyName")}
-                    required
-                    label="Company Name"
-                    error={!!errors.companyName}
-                    fullWidth
-                    style={{ marginBottom: "10px" }}
-                  />
-
-                  <TextField
-                    {...register("deliveryAddress")}
-                    required
-                    label="Company Delivery Address"
-                    error={!!errors.deliveryAddress}
-                    fullWidth
-                    style={{ marginBottom: "10px" }}
-                  />
-
-                  <TextField
-                    {...register("telephone")}
-                    required
-                    error={!!errors.telephone}
-                    fullWidth
-                    label="Company Phone Number"
-                    style={{ marginBottom: "10px" }}
-                  />
-
-                  <TextField
-                    {...register("email")}
-                    required
-                    error={!!errors.email}
-                    fullWidth
-                    label="Company Email"
-                    style={{ marginBottom: "10px" }}
-                  />
-                </>
+                <CompanyFormFields register={register} errors={errors} />
               )}
 
               <DialogActions>
