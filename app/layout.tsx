@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { CssBaseline } from "@mui/material";
+import ThemeProvider from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,8 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-       <html lang="en">
-      <body className={inter.className}>{children}</body>
-        </html>
+    <html lang="en">
+      <body>
+        <CssBaseline />
+        {children}
+      </body>
+    </html>
   );
 }

@@ -217,7 +217,7 @@ export default function WoodFormModal() {
         formData={formData}
       />
       <>
-        <Button onClick={handleOpen}>Open Form</Button>
+        <Button onClick={handleOpen} variant="contained" style={{ backgroundColor: "#314f32", color: "white" }}>Open Form</Button>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle
             sx={{
