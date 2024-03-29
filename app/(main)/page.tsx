@@ -1,15 +1,17 @@
 
 
+import HomePage from "@/components/homepage";
 import  WoodFormModal  from "@/components/modals/woods-form-modal";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 
 
 export default function Home() {
   return (
     
-    <Container>
-      <WoodFormModal />
-    </Container>
+    <Box sx={{height: "100%", }}>
+      {/* <WoodFormModal /> */}
+      <HomePage />
+    </Box>
     
   );
 }

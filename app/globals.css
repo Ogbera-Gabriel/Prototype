@@ -1,11 +1,16 @@
-
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 html,
 body,
-:root{
+:root {
   height: 100%;
+  
 }
- 
+
 .specify {
   flex: 1;
 }
@@ -15,7 +20,7 @@ body,
   justify-content: space-between;
   padding-top: 3px;
   padding-bottom: 3px;
-  border-bottom: 1px solid black; 
+  border-bottom: 1px solid black;
   padding-bottom: 5px;
 }
 
@@ -23,19 +28,19 @@ body,
   flex: 1;
 }
 
-.specify_thridfdiv{
-  flex: 1 1 0%; 
-  text-align: right; 
+.specify_thridfdiv {
+  flex: 1 1 0%;
+  text-align: right;
 }
 
 @media only screen and (max-width: 560px) {
   div#dialog-header {
-    font-size: 5px; 
+    font-size: 5px;
   }
 }
 
 @media (max-width: 480px) {
   .specify {
-    display: none
+    display: none;
   }
 }

@@ -1,9 +1,11 @@
+import Box from "@mui/material/Box"
+
 const MainLayout = ({ children }: { children: React.ReactNode}) =>
 {
     return (
-        <div className="h-full flex items-center justify-center">
+        <Box sx={{height: "100%", width: "100%"}}> 
             {children}
-        </div>
+        </Box>
     )
 }
 
