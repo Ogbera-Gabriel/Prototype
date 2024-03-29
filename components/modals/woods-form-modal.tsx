@@ -1,6 +1,12 @@
 "use client";
 
-import { Autocomplete, FormControl, InputLabel, Select } from "@mui/material";
+import {
+  Autocomplete,
+  FormControl,
+  Grid,
+  InputLabel,
+  Select,
+} from "@mui/material";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -10,7 +16,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   TextField,
   Accordion,
@@ -22,20 +27,10 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import MenuItem from "@mui/material/MenuItem";
 import { SubmitHandler } from "react-hook-form";
 import axios from "axios";
-import { green } from "@mui/material/colors";
+
 import ConfirmationDialog from "@/components/modals/confimation-modal";
 import CompanyFormFields from "./company-modal";
 import { useRouter } from "next/navigation";
-
-const style = {
-  dialogtile: {
-    color: "white",
-    height: "60p",
-    background: "#314f32",
-    marginBottom: "15px",
-    fontSize: "18px",
-  },
-};
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
@@ -159,6 +154,14 @@ export default function WoodFormModal() {
     router.push("/offer");
   };
 
+  const handleChangeQuantityMeasure = (event :React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedOptions({
+      ...selectedOptions,
+      quantityMeasure: event.target.value,
+    });
+  };
+
+
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     debugger;
     try {
@@ -187,12 +190,12 @@ export default function WoodFormModal() {
         },
       };
       console.log(formData);
-      // const response = await axios.post(
-      //   process.env.NEXT_PUBLIC_SERVER_URL!,
-      //   formData
-      // );
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_SERVER_URL!,
+        formData
+      );
 
-      // console.log(response.data);
+      console.log(response.data);
 
       handleClose();
       setFormData(data);
@@ -216,115 +219,80 @@ export default function WoodFormModal() {
       <>
         <Button onClick={handleOpen}>Open Form</Button>
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle style={style.dialogtile}>
-            {showWood ? "Wood Form" : "Your Profile"}
+          <DialogTitle
+            sx={{
+              color: "white",
+              height: "60px",
+              background: "#314f32",
+              marginBottom: "15px",
+              fontSize: {
+                xs: "13px",
+                sm: "18px",
+              },
+            }}
+          >
+            {showWood
+              ? `Wood Type: ${selectedOptions.softwood} ${selectedOptions.finish} ${selectedOptions.length} ${selectedOptions.quantityMeasure} Rounded ${selectedOptions.strengthGrade} ${selectedOptions.drying} ${selectedOptions.certified} ${selectedOptions.visualQuantity} ${selectedOptions.impregnation}`
+              : "Your Profile"}
           </DialogTitle>
           <DialogContent>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              autoComplete="off"
-              style={{ paddingBlock: "20px", width: "500px" }}
-            >
-              {showWood && (
-                <>
-                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      SoftWood
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      required
-                      label="SoftWood"
-                      defaultValue={""}
-                      {...register("softwood")}
-                      error={!!errors.softwood}
-                      value={selectedOptions.softwood}
-                      onChange={(e) =>
-                        setSelectedOptions({
-                          ...selectedOptions,
-                          softwood: e.target.value,
-                        })
-                      }
-                    >
-                      {[
+            <div style={{ display: "flex" }}>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                autoComplete="off"
+                style={{ flex: 1, paddingBlock: "20px", marginRight: "20px" }}
+              >
+                {showWood && (
+                  <div>
+                    <Autocomplete
+                      fullWidth
+                      options={[
                         "Douglas 45x200",
                         "Larch 160x260",
                         "Pine 47x100",
                         "Spruce 22x45",
                         "Spruce SLS 38x140",
-                      ].map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl> */}
-
-                  <Autocomplete
-                    fullWidth
-                    options={[
-                      "Douglas 45x200",
-                      "Larch 160x260",
-                      "Pine 47x100",
-                      "Spruce 22x45",
-                      "Spruce SLS 38x140",
-                    ]}
-                    freeSolo
-                    value={selectedOptions.softwood}
-                    onChange={(event: any, newValue: string | null) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        softwood: newValue ?? "",
-                      })
-                    }
-                    onInputChange={(event, newInputValue) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        softwood: newInputValue,
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Softwood"
-                        {...register("softwood")}
-                        error={!!errors.softwood}
-                        style={{ marginBottom: "10px" }} 
-                      />
-                    )}
-                  />
-
-                  <TextField
-                    {...register("quantityMeasure")}
-                    required
-                    label="Quantity"
-                    error={!!errors.quantityMeasure}
-                    fullWidth
-                    style={{ marginBottom: "10px" }}
-                  />
-
-                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Length
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      required
-                      label="Length"
-                      defaultValue={""}
-                      {...register("length")}
-                      value={selectedOptions.length}
-                      error={!!errors.length}
-                      onChange={(e) =>
+                      ]}
+                      freeSolo
+                      value={selectedOptions.softwood}
+                      onChange={(event: any, newValue: string | null) =>
                         setSelectedOptions({
                           ...selectedOptions,
-                          length: e.target.value,
+                          softwood: newValue ?? "",
                         })
                       }
-                    >
-                      {[
+                      onInputChange={(event, newInputValue) =>
+                        setSelectedOptions({
+                          ...selectedOptions,
+                          softwood: newInputValue,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Softwood"
+                          {...register("softwood")}
+                          required
+                          error={!!errors.softwood}
+                          style={{ marginBottom: "10px" }}
+                        />
+                      )}
+                    />
+
+                    <TextField
+                      {...register("quantityMeasure")}
+                      onChange={handleChangeQuantityMeasure}
+                      type="number"
+                      required
+                      label="Quantity"
+                      error={!!errors.quantityMeasure}
+                      fullWidth
+                      style={{ marginBottom: "10px" }}
+                    />
+
+                    <Autocomplete
+                      fullWidth
+                      options={[
                         "2400mm",
                         "2500mm",
                         "2600mm",
@@ -333,426 +301,351 @@ export default function WoodFormModal() {
                         "2900mm",
                         "3000mm",
                         "3100mm",
-                      ].map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl> */}
-
-                  <Autocomplete
-                    fullWidth
-                    options={[
-                      "2400mm",
-                      "2500mm",
-                      "2600mm",
-                      "2700mm",
-                      "2800mm",
-                      "2900mm",
-                      "3000mm",
-                      "3100mm",
-                    ]}
-                    freeSolo
-                    value={selectedOptions.length}
-                    onChange={(event: any, newValue: string | null) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        length: newValue ?? "",
-                      })
-                    }
-                    onInputChange={(event, newInputValue) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        length: newInputValue,
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Length"
-                        {...register("length")}
-                        error={!!errors.length}
-                        style={{ marginBottom: "10px" }} 
-                      />
-                    )}
-                  />
-
-                  <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Finish
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      required
-                      label="Finish"
-                      defaultValue={""}
-                      {...register("finish")}
-                      value={selectedOptions.finish}
-                      error={!!errors.finish}
-                      onChange={(e) =>
+                      ]}
+                      freeSolo
+                      value={selectedOptions.length}
+                      onChange={(event: any, newValue: string | null) =>
                         setSelectedOptions({
                           ...selectedOptions,
-                          finish: e.target.value,
+                          length: newValue ?? "",
                         })
                       }
-                    >
-                      {["Unplanned", "Fine Sawn"].map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                      onInputChange={(event, newInputValue) =>
+                        setSelectedOptions({
+                          ...selectedOptions,
+                          length: newInputValue,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Length"
+                          {...register("length")}
+                          required
+                          error={!!errors.length}
+                          style={{ marginBottom: "10px" }}
+                        />
+                      )}
+                    />
 
-                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Drying
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      required
-                      defaultValue={""}
-                      label="Drying"
-                      {...register("drying")}
+                    <FormControl fullWidth style={{ marginBottom: "10px" }}>
+                      <InputLabel id="demo-simple-select-label">
+                        Finish
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        required
+                        label="Finish*"
+                        defaultValue={""}
+                        {...register("finish")}
+                        value={selectedOptions.finish}
+                        error={!!errors.finish}
+                        onChange={(e) =>
+                          setSelectedOptions({
+                            ...selectedOptions,
+                            finish: e.target.value,
+                          })
+                        }
+                      >
+                        {["Unplanned", "Fine Sawn"].map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+
+                    <Autocomplete
+                      fullWidth
+                      options={["KD", "AD", "Heat Treated"]}
+                      freeSolo
                       value={selectedOptions.drying}
-                      error={!!errors.drying}
-                      onChange={(e) =>
+                      onChange={(event: any, newValue: string | null) =>
                         setSelectedOptions({
                           ...selectedOptions,
-                          drying: e.target.value,
+                          drying: newValue ?? "",
                         })
                       }
-                    >
-                      {["KD", "AD", "Heat Treated"].map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl> */}
+                      onInputChange={(event, newInputValue) =>
+                        setSelectedOptions({
+                          ...selectedOptions,
+                          drying: newInputValue,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Drying"
+                          {...register("drying")}
+                          required
+                          error={!!errors.drying}
+                          style={{ marginBottom: "10px" }}
+                        />
+                      )}
+                    />
 
-                  <Autocomplete
-                    fullWidth
-                    options={["KD", "AD", "Heat Treated"]}
-                    freeSolo
-                    value={selectedOptions.drying}
-                    onChange={(event: any, newValue: string | null) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        drying: newValue ?? "",
-                      })
-                    }
-                    onInputChange={(event, newInputValue) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        drying: newInputValue,
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Drying"
-                        {...register("drying")}
-                        error={!!errors.drying}
-                        style={{ marginBottom: "10px" }} 
-                      />
-                    )}
-                  />
-
-                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Strength
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      required
-                      defaultValue={""}
-                      label="Strength"
-                      {...register("strengthGrade")}
+                    <Autocomplete
+                      fullWidth
+                      options={["No Strength Grade", "C24", "C18"]}
+                      freeSolo
                       value={selectedOptions.strengthGrade}
-                      error={!!errors.strengthGrade}
-                      onChange={(e) =>
+                      onChange={(event: any, newValue: string | null) =>
                         setSelectedOptions({
                           ...selectedOptions,
-                          strengthGrade: e.target.value,
+                          strengthGrade: newValue ?? "",
                         })
                       }
-                    >
-                      {["No Strength grade", "C24", "C18"].map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl> */}
+                      onInputChange={(event, newInputValue) =>
+                        setSelectedOptions({
+                          ...selectedOptions,
+                          strengthGrade: newInputValue,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Strength"
+                          {...register("strengthGrade")}
+                          required
+                          error={!!errors.strengthGrade}
+                          style={{ marginBottom: "10px" }}
+                        />
+                      )}
+                    />
 
-                  <Autocomplete
-                    fullWidth
-                    options={["No Strength grade", "C24", "C18"]}
-                    freeSolo
-                    value={selectedOptions.strengthGrade}
-                    onChange={(event: any, newValue: string | null) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        strengthGrade: newValue ?? "",
-                      })
-                    }
-                    onInputChange={(event, newInputValue) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        strengthGrade: newInputValue,
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Strength"
-                        {...register("strengthGrade")}
-                        error={!!errors.strengthGrade}
-                        style={{ marginBottom: "10px" }} 
-                      />
-                    )}
-                  />
-
-                  {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Visual Quality
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      required
-                      defaultValue={""}
-                      label="Visual Quality"
-                      {...register("visualQuantity")}
+                    <Autocomplete
+                      fullWidth
+                      options={["C(V)", "B (OS I-IV)", "S/F (I-V)"]}
+                      freeSolo
                       value={selectedOptions.visualQuantity}
-                      error={!!errors.visualQuantity}
-                      onChange={(e) =>
+                      onChange={(event: any, newValue: string | null) =>
                         setSelectedOptions({
                           ...selectedOptions,
-                          visualQuantity: e.target.value,
+                          visualQuantity: newValue ?? "",
                         })
                       }
-                    >
-                      {["C(V)", "B (OS I-IV)", "S/F (I-V)"].map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl> */}
+                      onInputChange={(event, newInputValue) =>
+                        setSelectedOptions({
+                          ...selectedOptions,
+                          visualQuantity: newInputValue,
+                        })
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Visual Quality"
+                          {...register("visualQuantity")}
+                          required
+                          error={!!errors.visualQuantity}
+                          style={{ marginBottom: "10px" }}
+                        />
+                      )}
+                    />
 
-                  <Autocomplete
-                    fullWidth
-                    options={["C(V)", "B (OS I-IV)", "S/F (I-V)"]}
-                    freeSolo
-                    value={selectedOptions.visualQuantity}
-                    onChange={(event: any, newValue: string | null) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        visualQuantity: newValue ?? "",
-                      })
-                    }
-                    onInputChange={(event, newInputValue) =>
-                      setSelectedOptions({
-                        ...selectedOptions,
-                        visualQuantity: newInputValue,
-                      })
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Visual Quality"
-                        {...register("visualQuantity")}
-                        error={!!errors.visualQuantity}
-                        style={{ marginBottom: "10px" }} 
-                      />
-                    )}
-                  />
-
-                  <Accordion>
-                    <AccordionSummary
-                      expandIcon={<ArrowDownwardIcon />}
-                      aria-controls="panel2-content"
-                      id="panel2-header"
-                    >
-                      <Typography>Additional Details</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                        <InputLabel id="demo-simple-select-label">
-                          Certified
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          defaultValue={""}
-                          label="Certified"
-                          {...register("certified")}
+                    <Accordion>
+                      <AccordionSummary
+                        expandIcon={<ArrowDownwardIcon />}
+                        aria-controls="panel2-content"
+                        id="panel2-header"
+                      >
+                        <Typography>Additional Details</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Autocomplete
+                          fullWidth
+                          options={["No Certificate", "FSC or PEFC", "ISPM15"]}
+                          freeSolo
                           value={selectedOptions.certified}
-                          onChange={(e) =>
+                          onChange={(event: any, newValue: string | null) =>
                             setSelectedOptions({
                               ...selectedOptions,
-                              certified: e.target.value,
+                              certified: newValue ?? "",
                             })
                           }
-                        >
-                          {["No Certificate", "FSC or PEFC", "ISPM15"].map(
-                            (option) => (
-                              <MenuItem key={option} value={option}>
-                                {option}
-                              </MenuItem>
-                            )
+                          onInputChange={(event, newInputValue) =>
+                            setSelectedOptions({
+                              ...selectedOptions,
+                              certified: newInputValue,
+                            })
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Certified"
+                              {...register("certified")}
+                              error={!!errors.certified}
+                              style={{ marginBottom: "10px" }}
+                            />
                           )}
-                        </Select>
-                      </FormControl> */}
+                        />
 
-                      <Autocomplete
-                        fullWidth
-                        options={["No Certificate", "FSC or PEFC", "ISPM15"]}
-                        freeSolo
-                        value={selectedOptions.certified}
-                        onChange={(event: any, newValue: string | null) =>
-                          setSelectedOptions({
-                            ...selectedOptions,
-                            certified: newValue ?? "",
-                          })
-                        }
-                        onInputChange={(event, newInputValue) =>
-                          setSelectedOptions({
-                            ...selectedOptions,
-                            certified: newInputValue,
-                          })
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Certified"
-                            {...register("certified")}
-                            error={!!errors.certified}
-                            style={{ marginBottom: "10px" }} 
-                          />
-                        )}
-                      />
-
-                      {/* <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                        <InputLabel id="demo-simple-select-label">
-                          Moisture
-                        </InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          defaultValue={""}
-                          label="Moisture"
-                          {...register("moisture")}
+                        <Autocomplete
+                          fullWidth
+                          options={["10-14", "18-21", "15-18"]}
+                          freeSolo
                           value={selectedOptions.moisture}
-                          onChange={(e) =>
+                          onChange={(event: any, newValue: string | null) =>
                             setSelectedOptions({
                               ...selectedOptions,
-                              moisture: e.target.value,
+                              moisture: newValue ?? "",
                             })
                           }
-                        >
-                          {["10-14", "18-21", "15-18"].map((option) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl> */}
-                      <Autocomplete
-                        fullWidth
-                        options={["10-14", "18-21", "15-18"]}
-                        freeSolo
-                        value={selectedOptions.moisture}
-                        onChange={(event: any, newValue: string | null) =>
-                          setSelectedOptions({
-                            ...selectedOptions,
-                            moisture: newValue ?? "",
-                          })
-                        }
-                        onInputChange={(event, newInputValue) =>
-                          setSelectedOptions({
-                            ...selectedOptions,
-                            moisture: newInputValue,
-                          })
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Moisture"
-                            {...register("moisture")}
-                            error={!!errors.impregnation}
-                            style={{ marginBottom: "10px" }}
-                          />
-                        )}
-                      />
-                      <Autocomplete
-                        fullWidth
-                        options={["Impregnated", "Not Impregnated"]}
-                        freeSolo
-                        value={selectedOptions.impregnation}
-                        onChange={(event: any, newValue: string | null) =>
-                          setSelectedOptions({
-                            ...selectedOptions,
-                            impregnation: newValue ?? "",
-                          })
-                        }
-                        onInputChange={(event, newInputValue) =>
-                          setSelectedOptions({
-                            ...selectedOptions,
-                            impregnation: newInputValue,
-                          })
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Impregnation"
-                            {...register("impregnation")}
-                            error={!!errors.impregnation}
-                          />
-                        )}
-                      />
-                    </AccordionDetails>
-                  </Accordion>
-                </>
-              )}
+                          onInputChange={(event, newInputValue) =>
+                            setSelectedOptions({
+                              ...selectedOptions,
+                              moisture: newInputValue,
+                            })
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Moisture"
+                              {...register("moisture")}
+                              error={!!errors.impregnation}
+                              style={{ marginBottom: "10px" }}
+                            />
+                          )}
+                        />
+                        <Autocomplete
+                          fullWidth
+                          options={["Impregnated", "Not Impregnated"]}
+                          freeSolo
+                          value={selectedOptions.impregnation}
+                          onChange={(event: any, newValue: string | null) =>
+                            setSelectedOptions({
+                              ...selectedOptions,
+                              impregnation: newValue ?? "",
+                            })
+                          }
+                          onInputChange={(event, newInputValue) =>
+                            setSelectedOptions({
+                              ...selectedOptions,
+                              impregnation: newInputValue,
+                            })
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Impregnation"
+                              {...register("impregnation")}
+                              error={!!errors.impregnation}
+                            />
+                          )}
+                        />
+                      </AccordionDetails>
+                    </Accordion>
+                  </div>
+                )}
 
-              {showCompany && (
-                <CompanyFormFields register={register} errors={errors} />
-              )}
+                {showCompany && (
+                  <CompanyFormFields register={register} errors={errors} />
+                )}
 
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                {showWood && (
-                  <Button
-                    type="button"
-                    onClick={handleShowCompany}
-                    style={{ backgroundColor: "#314f32", color: "white" }}
-                  >
-                    Next
-                  </Button>
-                )}
-                {showCompany && (
-                  <Button type="button" onClick={handleShowWood}>
-                    {" "}
-                    Back
-                  </Button>
-                )}
-                {showCompany && (
-                  <Button
-                    type="submit"
-                    style={{ backgroundColor: "#314f32", color: "white" }}
-                  >
-                    Submit
-                  </Button>
-                )}
-              </DialogActions>
-            </form>
+                <DialogActions>
+                  <Button onClick={handleClose}>Cancel</Button>
+                  {showWood && (
+                    <Button
+                      type="button"
+                      onClick={handleShowCompany}
+                      style={{ backgroundColor: "#314f32", color: "white" }}
+                    >
+                      Next
+                    </Button>
+                  )}
+                  {showCompany && (
+                    <Button type="button" onClick={handleShowWood}>
+                      {" "}
+                      Back
+                    </Button>
+                  )}
+                  {showCompany && (
+                    <Button
+                      type="submit"
+                      style={{ backgroundColor: "#314f32", color: "white" }}
+                    >
+                      Submit
+                    </Button>
+                  )}
+                </DialogActions>
+              </form>
+              {showWood && (
+                <div
+                  className="specify"
+                  style={{ flex: 1, marginRight: 2, marginLeft: 2 }}
+                >
+                  <h3>Specifications</h3>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Category:</div>
+                    <div className="specify_thriddiv">Sawn timber</div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">SoftWood:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.softwood}
+                    </div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Quantity:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.quantityMeasure}
+                    </div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Finish:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.finish}
+                    </div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Length:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.length}
+                    </div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Drying:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.drying}
+                    </div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Strength Grade:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.strengthGrade}
+                    </div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Edges:</div>
+                    <div className="specify_thriddiv">Rounded</div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Visual:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.visualQuantity}
+                    </div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Certificate:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.certified}
+                    </div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Impregnated:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.impregnation}
+                    </div>
+                  </div>
+                  <div className="specify_firstdiv">
+                    <div className="specify_seconddiv">Moisture:</div>
+                    <div className="specify_thriddiv">
+                      {selectedOptions.moisture}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </DialogContent>
         </Dialog>
       </>
