@@ -90,7 +90,7 @@ const formSchema = z.object({
 });
 
 export default function WoodFormModal() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [showCompany, setShowCompany] = useState(false);
   const [showWood, setShowWood] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -205,9 +205,7 @@ export default function WoodFormModal() {
     }
   };
 
-  useEffect(() => {
-    handleOpen();
-  }, []);
+  
 
   return (
     <div>
@@ -224,6 +222,7 @@ export default function WoodFormModal() {
               color: "white",
               height: "60px",
               background: "#314f32",
+              paddingBottom: '60ox',
               marginBottom: "15px",
               fontSize: {
                 xs: "13px",

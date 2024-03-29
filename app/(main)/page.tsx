@@ -8,10 +8,10 @@ import { Box, Container } from "@mui/material";
 export default function Home() {
   return (
     
-    <Box sx={{height: "100%", }}>
-      {/* <WoodFormModal /> */}
+    <Container maxWidth='xl'>
+      <WoodFormModal /> 
       <HomePage />
-    </Box>
+    </Container>
     
   );
 }
