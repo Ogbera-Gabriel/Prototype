@@ -1,5 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 import Link from "next/link";
+import ForestIcon from '@mui/icons-material/Forest';
 
 export const Navbar = () => {
   return (
@@ -13,7 +14,9 @@ export const Navbar = () => {
       sx={{ backgroundColor: "#EEF0EB" }}
     >
       <Typography variant="body1" fontSize={20}>
-        <Link href="/">Arbo Woods</Link>
+        <Link href="/">
+          <ForestIcon sx={{ color: "#314f32" }} fontSize="large"/>
+        </Link>
       </Typography>
 
       

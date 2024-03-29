@@ -13,9 +13,20 @@ import { Navbar } from "./ui/navbar";
 import { Search } from "@mui/icons-material";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import { useState } from "react";
 
 export default function HomePage() {
+  
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filterTreeItems = (items: string[]) => {
+    return items.filter(item => item.toLowerCase().startsWith(searchQuery.toLowerCase()));
+  };
+
   return (
     <Box height="100%" sx={{ height: "100%", width: "100%" }}>
       <Navbar />
@@ -38,6 +49,8 @@ export default function HomePage() {
               fullWidth
               placeholder="Search for Products"
               variant="outlined"
+              value={searchQuery}
+              onChange={handleSearchInputChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -46,15 +59,16 @@ export default function HomePage() {
                 ),
               }}
             />
-            <SimpleTreeView>
+             <SimpleTreeView>
               <TreeItem itemId="sawn timber" label="Sawn Timber">
-                <TreeItem itemId="douglas" label="Douglas" />
-                <TreeItem itemId="larch" label="Larch" />
-                <TreeItem itemId="pine" label="Pine" />
+                {filterTreeItems(["Douglas", "Larch", "Pine"]).map((item, index) => (
+                  <TreeItem key={index} itemId={item.toLowerCase()} label={item} />
+                ))}
               </TreeItem>
               <TreeItem itemId="hardwood" label="Hardwood">
-                <TreeItem itemId="keruing" label="Keruing" />
-                <TreeItem itemId="meranti-dr" label="Meranti-DR" />
+                {filterTreeItems(["Keruing", "Meranti-DR"]).map((item, index) => (
+                  <TreeItem key={index} itemId={item.toLowerCase()} label={item} />
+                ))}
               </TreeItem>
             </SimpleTreeView>
           </Box>

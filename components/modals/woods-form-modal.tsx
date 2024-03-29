@@ -190,12 +190,12 @@ export default function WoodFormModal() {
         },
       };
       console.log(formData);
-      const response = await axios.post(
-        process.env.NEXT_PUBLIC_SERVER_URL!,
-        formData
-      );
+      // const response = await axios.post(
+      //   process.env.NEXT_PUBLIC_SERVER_URL!,
+      //   formData
+      // );
 
-      console.log(response.data);
+      // console.log(response.data);
 
       handleClose();
       setFormData(data);
@@ -222,7 +222,7 @@ export default function WoodFormModal() {
               color: "white",
               height: "60px",
               background: "#314f32",
-              paddingBottom: '60ox',
+              paddingBottom: '60px',
               marginBottom: "15px",
               fontSize: {
                 xs: "13px",
