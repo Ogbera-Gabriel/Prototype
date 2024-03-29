@@ -16,15 +16,18 @@ import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { useState } from "react";
 
 export default function HomePage() {
-  
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSearchQuery(event.target.value);
   };
 
   const filterTreeItems = (items: string[]) => {
-    return items.filter(item => item.toLowerCase().startsWith(searchQuery.toLowerCase()));
+    return items.filter((item) =>
+      item.toLowerCase().startsWith(searchQuery.toLowerCase())
+    );
   };
 
   return (
@@ -59,16 +62,28 @@ export default function HomePage() {
                 ),
               }}
             />
-             <SimpleTreeView>
+            <SimpleTreeView>
               <TreeItem itemId="sawn timber" label="Sawn Timber">
-                {filterTreeItems(["Douglas", "Larch", "Pine"]).map((item, index) => (
-                  <TreeItem key={index} itemId={item.toLowerCase()} label={item} />
-                ))}
+                {filterTreeItems(["Douglas", "Larch", "Pine"]).map(
+                  (item, index) => (
+                    <TreeItem
+                      key={index}
+                      itemId={item.toLowerCase()}
+                      label={item}
+                    />
+                  )
+                )}
               </TreeItem>
               <TreeItem itemId="hardwood" label="Hardwood">
-                {filterTreeItems(["Keruing", "Meranti-DR"]).map((item, index) => (
-                  <TreeItem key={index} itemId={item.toLowerCase()} label={item} />
-                ))}
+                {filterTreeItems(["Keruing", "Meranti-DR"]).map(
+                  (item, index) => (
+                    <TreeItem
+                      key={index}
+                      itemId={item.toLowerCase()}
+                      label={item}
+                    />
+                  )
+                )}
               </TreeItem>
             </SimpleTreeView>
           </Box>
