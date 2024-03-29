@@ -64,7 +64,7 @@ export default function HomePage() {
             />
             <SimpleTreeView>
               <TreeItem itemId="sawn timber" label="Sawn Timber">
-                {filterTreeItems(["Douglas", "Larch", "Pine"]).map(
+                {filterTreeItems(["Douglas", "Larch", "Pine", "Spruce", "Spruce SLS"]).map(
                   (item, index) => (
                     <TreeItem
                       key={index}
@@ -75,7 +75,7 @@ export default function HomePage() {
                 )}
               </TreeItem>
               <TreeItem itemId="hardwood" label="Hardwood">
-                {filterTreeItems(["Keruing", "Meranti-DR"]).map(
+                {filterTreeItems(["Keruing", "Meranti-DR", "Oak", "Sapeli Mahonie"]).map(
                   (item, index) => (
                     <TreeItem
                       key={index}
