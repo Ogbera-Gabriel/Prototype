@@ -326,7 +326,7 @@ export default function WoodFormSelectModal({
                           {...register("quantityUnit")}
                           value={selectedOptions.quantityUnit}
                           error={!!errors.quantityUnit}
-                          label="Unit"
+                          label="Unit *"
                           onChange={(e) => {
                             setSelectedOptions((prevOptions) => ({
                               ...prevOptions,
@@ -391,7 +391,7 @@ export default function WoodFormSelectModal({
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         required
-                        label="Finish*"
+                        label="Finish *"
                         defaultValue={""}
                         {...register("finish")}
                         value={selectedOptions.finish}
