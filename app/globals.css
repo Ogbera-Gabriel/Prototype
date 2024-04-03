@@ -4,13 +4,13 @@
   box-sizing: border-box;
 }
 
+
 html,
 body,
-:root {
+:root{
   height: 100%;
-  
 }
-
+ 
 .specify {
   flex: 1;
 }
@@ -20,7 +20,7 @@ body,
   justify-content: space-between;
   padding-top: 3px;
   padding-bottom: 3px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid black; 
   padding-bottom: 5px;
 }
 
@@ -28,19 +28,95 @@ body,
   flex: 1;
 }
 
-.specify_thridfdiv {
-  flex: 1 1 0%;
-  text-align: right;
+.specify_thridfdiv{
+  flex: 1 1 0%; 
+  text-align: right; 
 }
+
+.list-wood {
+  display: flex; 
+ margin-left: 0.5rem;
+ margin-right: 0.5rem; 
+ flex-direction: column; 
+ gap: 1rem; 
+ border-top-width: 1px; 
+}
+
+.list-wood-button {
+  display: flex;
+  margin-top: 0; 
+  padding: 1rem; 
+  border: none;
+  gap: 0rem; 
+  justify-content: space-between; 
+  align-items: center; 
+  font-weight: 400; 
+  line-height: 1; 
+  background-color: transparent; 
+  cursor: pointer;
+  position: relative; /* Add position relative */
+}
+
+.list-wood-button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.5); 
+  bottom: 0;
+}
+
+.list-wood-button:hover::after {
+  width: 0;
+}
+
+.list-wood-button:hover div {
+  transition: transform 0.3s ease; 
+  transform: translateY(-5px); 
+}
+
+.list-wood-button:hover {
+  background-color: #314f32;
+}
+
+.list-wood-button:hover div {
+  color: #fff;
+}
+
+
+
+.list-wood-firstdiv {
+  text-align: left; 
+  font-weight: bold;
+}
+
+.list-wood-seconddiv {
+  display: flex; 
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem; 
+  padding-left: 0.75rem;
+  padding-right: 0.75rem; 
+  justify-content: center; 
+  align-items: center; 
+  border-radius: 0.25rem; 
+  border-width: 1px; 
+  border-style: none; 
+  font-weight: 600; 
+  color: #de1313; 
+}
+
+
 
 @media only screen and (max-width: 560px) {
   div#dialog-header {
-    font-size: 5px;
+    font-size: 5px; 
   }
 }
 
 @media (max-width: 480px) {
   .specify {
-    display: none;
+    display: none
   }
 }
+

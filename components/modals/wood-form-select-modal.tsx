@@ -29,7 +29,7 @@ import { SubmitHandler } from "react-hook-form";
 import axios from "axios";
 
 import ConfirmationDialog from "@/components/modals/confimation-modal";
-import CompanyFormFields from "./company-modal";
+import CompanyFormFields from "@/components/modals/company-modal";
 // @ts-ignore
 import { useRouter } from "next/navigation";
 
@@ -37,9 +37,7 @@ const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
 );
 const formSchema = z.object({
-  softwood: z.string().min(1, {
-    message: "Softwood selection is required",
-  }),
+  softwood: z.string(),
   quantityMeasure: z
     .string()
     .or(z.number())
@@ -54,9 +52,11 @@ const formSchema = z.object({
         message: "Quantity must be a number greater than 0",
       }
     ),
-  quantityUnit: z.string().min(1, {
-    message: "Length is required",
-  }),
+  quantityUnit: z
+    .enum(["m³ (net)", "pc", "m³ (nom)", "m"])
+    .refine((value) => value !== undefined, {
+      message: "Please select a unit",
+    }),
   length: z.string().min(1, {
     message: "Length is required",
   }),
@@ -93,18 +93,28 @@ const formSchema = z.object({
   }),
 });
 
+type Props = {
+  openWood: boolean;
+  handleCloseWoodForm: () => void;
+  selectedSoftwood: string;
+};
+
 {
   /* add unit */
 }
 
-export default function WoodFormModal() {
+export default function WoodFormSelectModal({
+  openWood,
+  handleCloseWoodForm,
+  selectedSoftwood,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [showCompany, setShowCompany] = useState(false);
   const [showWood, setShowWood] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState<MyFormData | null>(null);
   const [selectedOptions, setSelectedOptions] = useState({
-    softwood: "",
+    softwood: selectedSoftwood,
     quantityMeasure: "",
     quantityUnit: "",
     length: "",
@@ -149,7 +159,7 @@ export default function WoodFormModal() {
   const handleCloseConfirmation = () => {
     setShowConfirmation(false);
     setSelectedOptions({
-      softwood: "",
+      softwood: selectedSoftwood,
       quantityMeasure: "",
       quantityUnit: "",
       length: "",
@@ -229,14 +239,7 @@ export default function WoodFormModal() {
         formData={formData}
       />
       <>
-        <Button
-          onClick={handleOpen}
-          variant="contained"
-          style={{ backgroundColor: "#314f32", color: "white" }}
-        >
-          Open Form
-        </Button>
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={openWood} onClose={handleCloseWoodForm}>
           <DialogTitle
             sx={{
               color: "white",
@@ -251,7 +254,7 @@ export default function WoodFormModal() {
             }}
           >
             {showWood
-              ? `Wood Type: ${selectedOptions.softwood} ${selectedOptions.finish} ${selectedOptions.length} ${selectedOptions.quantityMeasure} Rounded ${selectedOptions.strengthGrade} ${selectedOptions.drying} ${selectedOptions.certified} ${selectedOptions.visualQuantity} ${selectedOptions.impregnation}`
+              ? `Wood Type: ${selectedSoftwood} ${selectedOptions.finish} ${selectedOptions.length} ${selectedOptions.quantityMeasure}${selectedOptions.quantityUnit} Rounded ${selectedOptions.strengthGrade} ${selectedOptions.drying} ${selectedOptions.certified} ${selectedOptions.visualQuantity} ${selectedOptions.impregnation}`
               : "Your Profile"}
           </DialogTitle>
           <DialogContent>
@@ -264,6 +267,7 @@ export default function WoodFormModal() {
                 {showWood && (
                   <div>
                     <Autocomplete
+                      hidden
                       fullWidth
                       options={[
                         "Douglas 45x200",
@@ -288,9 +292,12 @@ export default function WoodFormModal() {
                       }
                       renderInput={(params) => (
                         <TextField
+                          type="hidden"
                           {...params}
                           label="Softwood"
-                          {...register("softwood")}
+                          {...register("softwood", {
+                            value: selectedOptions.softwood,
+                          })}
                           required
                           error={!!errors.softwood}
                           style={{ marginBottom: "10px" }}
@@ -314,22 +321,27 @@ export default function WoodFormModal() {
                       >
                         <InputLabel id="quantity-unit-label">Unit</InputLabel>
                         <Select
-                          {...register("quantityUnit")}
                           labelId="quantity-unit-label"
                           id="quantity-unit"
+                          {...register("quantityUnit")}
                           value={selectedOptions.quantityUnit}
-                          onChange={(e) =>
-                            setSelectedOptions({
-                              ...selectedOptions,
+                          error={!!errors.quantityUnit}
+                          label="Unit"
+                          onChange={(e) => {
+                            setSelectedOptions((prevOptions) => ({
+                              ...prevOptions,
                               quantityUnit: e.target.value,
-                            })
-                          }
+                            }));
+                          }}
                         >
                           <MenuItem value={"m³ (net)"}>m³ (net)</MenuItem>
                           <MenuItem value={"pc"}>pc</MenuItem>
                           <MenuItem value={"m³ (nom)"}>m³ (nom)</MenuItem>
                           <MenuItem value={"m"}>m</MenuItem>
                         </Select>
+                        {errors.quantityUnit && (
+                          <span>{errors.quantityUnit.message}</span>
+                        )}
                       </FormControl>
                     </div>
 
@@ -586,7 +598,7 @@ export default function WoodFormModal() {
                 )}
 
                 <DialogActions>
-                  <Button onClick={handleClose}>Cancel</Button>
+                  <Button onClick={handleCloseWoodForm}>Cancel</Button>
                   {showWood && (
                     <Button
                       type="button"
@@ -632,6 +644,7 @@ export default function WoodFormModal() {
                     <div className="specify_seconddiv">Quantity:</div>
                     <div className="specify_thriddiv">
                       {selectedOptions.quantityMeasure}
+                      {selectedOptions.quantityUnit}
                     </div>
                   </div>
                   <div className="specify_firstdiv">

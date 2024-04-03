@@ -18,6 +18,7 @@ interface ConfirmationDialogProps {
   formData: {
     softwood: string;
     quantityMeasure: string | number;
+    quantityUnit: string;
     length: string;
     finish: string;
     drying: string;
@@ -57,7 +58,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
               Softwood: {formData.softwood}
             </Typography>
             <Typography variant="body1">
-              Quantity: {formData.quantityMeasure}
+              Quantity: {formData.quantityMeasure}{formData.quantityUnit}
             </Typography>
             <Typography variant="body1">
               Length: {formData.length}
