@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Button,
@@ -32,6 +32,7 @@ import ConfirmationDialog from "@/components/modals/confimation-modal";
 import CompanyFormFields from "@/components/modals/company-modal";
 // @ts-ignore
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/
@@ -109,6 +110,7 @@ export default function WoodFormSelectModal({
   selectedSoftwood,
 }: Props) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showCompany, setShowCompany] = useState(false);
   const [showWood, setShowWood] = useState(true);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -156,7 +158,41 @@ export default function WoodFormSelectModal({
     setShowWood(true);
   };
 
-  const handleCloseConfirmation = () => {
+  // const handleCloseConfirmation = () => {
+  //   setShowConfirmation(false);
+  //   setSelectedOptions({
+  //     softwood: selectedSoftwood,
+  //     quantityMeasure: "",
+  //     quantityUnit: "",
+  //     length: "",
+  //     finish: "",
+  //     drying: "",
+  //     strengthGrade: "",
+  //     visualQuantity: "",
+  //     certified: "",
+  //     moisture: "",
+  //     impregnation: "",
+  //   });
+
+  //   toast.loading('Loading Offers');
+  //   router.push("/offer");
+  // };
+
+  const handleCloseConfirmation = async () => {
+    // Display the loading message
+    const loadingPromise = toast.promise(
+      // Pass a promise that resolves after a short delay (simulating loading)
+      new Promise<void>((resolve) => {
+        // Simulate loading duration with a delay
+        setTimeout(resolve, 5000);
+      }),
+      {
+        loading: 'Loading Offers',
+        success: 'Offers Loaded!',
+        error: 'Failed to Load Offers',
+      }
+    );
+
     setShowConfirmation(false);
     setSelectedOptions({
       softwood: selectedSoftwood,
@@ -171,6 +207,11 @@ export default function WoodFormSelectModal({
       moisture: "",
       impregnation: "",
     });
+
+    // Wait for the loading promise to resolve
+    await loadingPromise;
+
+    // Navigate to "/offer" after loading completes
     router.push("/offer");
   };
 
@@ -218,7 +259,6 @@ export default function WoodFormSelectModal({
       // );
 
       // console.log(response.data);
-
       handleClose();
       setFormData(data);
       setShowConfirmation(true);
@@ -227,10 +267,6 @@ export default function WoodFormSelectModal({
     }
   };
 
-  // useEffect(() => {
-  //   handleOpen();
-  // }, []);
-
   return (
     <div>
       <ConfirmationDialog
@@ -238,6 +274,7 @@ export default function WoodFormSelectModal({
         handleClose={handleCloseConfirmation}
         formData={formData}
       />
+
       <>
         <Dialog open={openWood} onClose={handleCloseWoodForm}>
           <DialogTitle
@@ -384,12 +421,12 @@ export default function WoodFormSelectModal({
                     />
 
                     <FormControl fullWidth style={{ marginBottom: "10px" }}>
-                      <InputLabel id="demo-simple-select-label">
+                      <InputLabel id="demo-simple-select-required-label">
                         Finish
                       </InputLabel>
                       <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
+                        labelId="demo-simple-select-required-label"
+                        id="demo-simple-select-required"
                         required
                         label="Finish *"
                         defaultValue={""}
