@@ -207,7 +207,7 @@ export default function WoodFormSelectModal({
       moisture: "",
       impregnation: "",
     });
-
+    // shit works i guess
     // Wait for the loading promise to resolve
     await loadingPromise;
 
@@ -223,6 +223,8 @@ export default function WoodFormSelectModal({
       quantityMeasure: event.target.value,
     });
   };
+
+  console.log(2+4);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     debugger;
