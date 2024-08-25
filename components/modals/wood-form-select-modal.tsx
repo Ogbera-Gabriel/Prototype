@@ -224,7 +224,7 @@ export default function WoodFormSelectModal({
     });
   };
 
-  console.log(2+4);
+  
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     debugger;
