@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import {
-  Button,
   Grid,
   InputAdornment,
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Search } from "@mui/icons-material";
@@ -21,6 +22,8 @@ export default function HomePage(): JSX.Element {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedItem, setSelectedItem] = useState<string>("");
   const [woodFormModalOpen, setWoodFormModalOpen] = useState<boolean>(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const itemOptions: { [key: string]: string[] } = {
     "Spruce": ["Spruce 75x75", "Spruce 22x32", "Spruce 125x175", "Spruce 44x150", "Spruce 38x200"],
@@ -66,25 +69,24 @@ export default function HomePage(): JSX.Element {
   };
 
   return (
-    <Box height="100%" sx={{ height: "100%", width: "100%" }}>
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#EEF0EB" }}>
       <Navbar />
-      <Grid container spacing={2}>
-        <Grid item lg={4} xs={12}>
+      <Grid container spacing={3} sx={{ p: { xs: 2, md: 4 } }}>
+        <Grid item xs={12} md={4}>
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              px: 10,
-              pt: 4,
-              gap: 2,
+              backgroundColor: "#FFFFFF",
+              borderRadius: 2,
+              p: 3,
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
             }}
           >
-            <Typography fontWeight={700} fontSize={20}>
+            <Typography fontWeight={700} fontSize={24} mb={2} color="#314f32">
               Filter
             </Typography>
             <TextField
               fullWidth
-              autoComplete="none"
+              autoComplete="off"
               placeholder="Search for Products"
               variant="outlined"
               value={searchQuery}
@@ -92,12 +94,38 @@ export default function HomePage(): JSX.Element {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Search />
+                    <Search color="action" />
                   </InputAdornment>
                 ),
               }}
+              sx={{
+                mb: 2,
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#314f32",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#314f32",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#314f32",
+                  },
+                },
+              }}
             />
-            <SimpleTreeView>
+            <SimpleTreeView
+              sx={{
+                color: "#314f32",
+                "& .MuiTreeItem-content": {
+                  "&:hover": {
+                    backgroundColor: "rgba(49, 79, 50, 0.1)",
+                  },
+                },
+                "& .Mui-selected": {
+                  backgroundColor: "rgba(49, 79, 50, 0.2) !important",
+                },
+              }}
+            >
               <TreeItem itemId="sawn timber" label="Sawn Timber">
                 {filterTreeItems([
                   "Douglas",
@@ -132,54 +160,54 @@ export default function HomePage(): JSX.Element {
             </SimpleTreeView>
           </Box>
         </Grid>
-        <Grid item lg={8} xs={12}>
+        <Grid item xs={12} md={8}>
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              px: 4,
-              pt: 4,
-              gap: 2,
-              flexGrow: 1,
-              width: "100%",
+              backgroundColor: "#FFFFFF",
+              borderRadius: 2,
+              p: 3,
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
             }}
           >
             <Stack
               direction="row"
               justifyContent="space-between"
-              width="100%"
               alignItems="center"
+              mb={2}
             >
-              <Typography>All Products</Typography>
-            </Stack>
-          </Box>
-          <ul className="list-wood">
-            {selectedItem ? (
-              (itemOptions[selectedItem] || [selectedItem]).map(
-                (option, index) => (
-                  <button
-                    type="button"
-                    key={index}
-                    className="list-wood-button"
-                    onClick={() => handleOpenWoodFormModal(option)}
-                  >
-                    <div className="list-wood-firstdiv">{option}</div>
-                    <div className="list-wood-seconddiv">Select</div>
-                  </button>
-                )
-              )
-            ) : (
-              <Typography
-                style={{
-                  marginTop: "10px",
-                  marginLeft: "25px",
-                  fontWeight: "bold",
-                }}
-              >
-                Please select an item from the list
+              <Typography fontWeight={700} fontSize={24} color="#314f32">
+                All Products
               </Typography>
-            )}
-          </ul>
+            </Stack>
+            <ul className="list-wood">
+              {selectedItem ? (
+                (itemOptions[selectedItem] || [selectedItem]).map(
+                  (option, index) => (
+                    <button
+                      type="button"
+                      key={index}
+                      className="list-wood-button"
+                      onClick={() => handleOpenWoodFormModal(option)}
+                    >
+                      <div className="list-wood-firstdiv">{option}</div>
+                      <div className="list-wood-seconddiv">Select</div>
+                    </button>
+                  )
+                )
+              ) : (
+                <Typography
+                  style={{
+                    marginTop: "10px",
+                    marginLeft: "25px",
+                    fontWeight: "bold",
+                    color: "#314f32",
+                  }}
+                >
+                  Please select an item from the list
+                </Typography>
+              )}
+            </ul>
+          </Box>
         </Grid>
       </Grid>
       {woodFormModalOpen && (
