@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
-import { CssBaseline } from "@mui/material";
-import ThemeProvider from "@mui/material";
 
-const inter = Inter({ subsets: ["latin"] });
+import "./globals.css";
+import { CssBaseline } from "@mui/material";
+
+
+
 
 export const metadata: Metadata = {
   title: "Arbo App",
